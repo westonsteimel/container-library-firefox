@@ -15,7 +15,7 @@ FROM westonsteimel/alpine-glibc:edge
 
 COPY --from=downloader /opt/firefox/ /opt/firefox/
 
-RUN apk add --no-cache \
+RUN apk upgrade && apk add --no-cache \
     alsa-lib \
     pulseaudio-alsa \
     dbus-x11 \
