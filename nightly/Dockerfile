@@ -1,56 +1,42 @@
-FROM westonsteimel/debian:sid-slim as downloader
+FROM westonsteimel/alpine-glibc:edge as downloader
 
-RUN apt-get update \
-    && apt-get install -y \
+RUN apk add --no-cache \
     ca-certificates \
     curl \
     bzip2 \
-    xz-utils \
-    --no-install-recommends \
+    xz \
+    tar \
     && cd /opt/ \
     && curl -fSL -o firefox.tar.bz2 "https://download.mozilla.org/?product=firefox-nightly-latest-ssl&os=linux64&lang=en-US" \
     && tar xvjf firefox.tar.bz2 \
     && rm firefox.tar.bz2
 
-FROM westonsteimel/debian:sid-slim
+FROM westonsteimel/alpine-glibc:edge
 
 COPY --from=downloader /opt/firefox/ /opt/firefox/
 
-RUN apt-get update \
-    && apt-get install -y \
-    apulse \
+RUN apk add --no-cache \
+    alsa-lib \
+    pulseaudio-alsa \
+    dbus-x11 \
+    dbus-glib \
     ca-certificates \
-    hicolor-icon-theme \
-    libasound2 \
-    libgl1-mesa-dri \
-    libgl1-mesa-glx \
-    libgtk-3-0 \
-    libdbus-glib-1-2 \
-    libxrender1 \
-    libx11-xcb-dev \
-    libx11-xcb1 \
-    libxt6 \
+    gtk+3.0 \
+    libxt \
     ffmpeg \
-    libpulse0 \
-    fonts-noto \
-    fonts-noto-cjk \
-    fonts-noto-color-emoji \
-    --no-install-recommends \
-    && ln -s /opt/firefox/firefox /usr/local/bin/ \
-    && update-alternatives --install /usr/bin/x-www-browser x-www-browser /opt/firefox/firefox 200 \
-    && update-alternatives --set x-www-browser /opt/firefox/firefox \
-    && apt-get autoremove -y \
-    && apt-get autoclean -y \
-    && apt-get clean -y \
-    && rm -rf /var/lib/apt/lists/*
+    hicolor-icon-theme \
+    mesa-dri-intel \
+    mesa-gl \
+    ttf-dejavu
 
-ENV LANG en-US
+# Add firefox user
+RUN addgroup firefox \
+    && adduser -G firefox -s /bin/sh -D firefox \
+    && chown -R firefox:firefox /home/firefox \
+    && addgroup firefox audio \
+    && addgroup firefox video
 
-COPY local.conf /etc/fonts/local.conf
+# Run Firefox as non privileged user
+#USER firefox
 
-RUN mkdir -p /etc/firefox && \  
-    echo 'pref("browser.tabs.remote.autostart", false);' >> /etc/firefox/syspref.js
-
-COPY entrypoint.sh /usr/bin/startfirefox
-
-ENTRYPOINT [ "startfirefox" ]
+ENTRYPOINT ["/opt/firefox/firefox"]
