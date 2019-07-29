@@ -1,4 +1,10 @@
+ARG FIREFOX_LANGUAGE="en-US"
+ARG FIREFOX_PRODUCT="firefox-latest-ssl"
+
 FROM westonsteimel/debian:sid-slim as downloader
+
+ARG FIREFOX_LANGUAGE
+ARG FIREFOX_PRODUCT
 
 RUN apt-get update \
     && apt-get install -y \
@@ -8,11 +14,13 @@ RUN apt-get update \
     xz-utils \
     --no-install-recommends \
     && cd /opt/ \
-    && curl -fSL -o firefox.tar.bz2 "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" \
+    && curl -fSL -o firefox.tar.bz2 "https://download.mozilla.org/?product=${FIREFOX_PRODUCT}&os=linux64&lang=${FIREFOX_LANGUAGE}" \
     && tar xvjf firefox.tar.bz2 \
     && rm firefox.tar.bz2
 
 FROM westonsteimel/debian:sid-slim
+
+ARG FIREFOX_LANGUAGE
 
 COPY --from=downloader /opt/firefox/ /opt/firefox/
 
@@ -44,7 +52,7 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-ENV LANG en-US
+ENV LANG "${FIREFOX_LANGUAGE}"
 
 COPY local.conf /etc/fonts/local.conf
 

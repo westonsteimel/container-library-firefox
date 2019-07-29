@@ -1,5 +1,5 @@
 ARG FIREFOX_LANGUAGE="en-US"
-ARG FIREFOX_PRODUCT="firefox-nightly-latest-ssl"
+ARG FIREFOX_PRODUCT="firefox-beta-latest-ssl"
 
 FROM westonsteimel/debian:sid-slim as downloader
 
