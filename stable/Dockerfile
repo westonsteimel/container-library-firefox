@@ -5,6 +5,7 @@ FROM westonsteimel/debian:sid-slim as downloader
 
 ARG FIREFOX_LANGUAGE
 ARG FIREFOX_PRODUCT
+ARG FIREFOX_DOWNLOAD_URL="https://download.mozilla.org/?product=${FIREFOX_PRODUCT}&os=linux64&lang=${FIREFOX_LANGUAGE}"
 
 RUN apt-get update \
     && apt-get install -y \
@@ -14,7 +15,8 @@ RUN apt-get update \
     xz-utils \
     --no-install-recommends \
     && cd /opt/ \
-    && curl -fSL -o firefox.tar.bz2 "https://download.mozilla.org/?product=${FIREFOX_PRODUCT}&os=linux64&lang=${FIREFOX_LANGUAGE}" \
+    && echo "Downloading from ${FIREFOX_DOWNLOAD_URL}..." \                                                                                           
+    && curl -fSL -o firefox.tar.bz2 "${FIREFOX_DOWNLOAD_URL}" \
     && tar xvjf firefox.tar.bz2 \
     && rm firefox.tar.bz2
 
