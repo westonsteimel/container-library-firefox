@@ -64,3 +64,10 @@ RUN mkdir -p /etc/firefox && \
 COPY entrypoint.sh /usr/bin/startfirefox
 
 ENTRYPOINT [ "startfirefox" ]
+
+LABEL org.opencontainers.image.title="Firefox Nightly" \
+    org.opencontainers.image.description="Firefox Nightly in Docker" \
+    org.opencontainers.image.url="https://github.com/westonsteimel/docker-firefox" \
+    org.opencontainers.image.source="https://github.com/westonsteimel/docker-firefox" \
+    org.opencontainers.image.version="nightly"
+
