@@ -1,7 +1,7 @@
 ARG FIREFOX_LANGUAGE="en-US"
 ARG FIREFOX_PRODUCT="firefox-nightly-latest-ssl"
 
-FROM westonsteimel/debian:sid-slim as downloader
+FROM debian:sid-slim as downloader
 
 ARG FIREFOX_LANGUAGE
 ARG FIREFOX_PRODUCT
@@ -20,7 +20,7 @@ RUN apt-get update \
     && tar xvjf firefox.tar.bz2 \
     && rm firefox.tar.bz2
 
-FROM westonsteimel/debian:sid-slim
+FROM debian:sid-slim
 
 ARG FIREFOX_LANGUAGE
 
