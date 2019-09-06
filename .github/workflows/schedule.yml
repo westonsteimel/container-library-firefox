@@ -1,6 +1,6 @@
 on:
-  schedules:
-  - cron: 0 1 * * *
+  schedule:
+  - cron: '0 1 * * *'
 name: Build and Push Dockerfiles
 jobs:
   build_stable:
