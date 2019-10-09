@@ -3,76 +3,61 @@ on:
   - cron: '0 1 * * *'
 name: Build and Push Dockerfiles
 jobs:
-  build_stable:
-    name: Build stable
+  dockerhub_publish_stable:
+    name: DockerHub Build and Publish stable
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Login DockerHub
-      uses: actions/docker/login@master
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    - name: Build Firefox stable
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    - name: Build and Publish stable to DockerHub
+      uses: westonsteimel/action-docker-publish@master
       with:
-        args: build -t "${DOCKER_USERNAME}/firefox:stable" -t "${DOCKER_USERNAME}/firefox:latest" stable
-    - name: Push Firefox stable to DockerHub
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      with:
-        args: push "${DOCKER_USERNAME}/firefox:stable"
-    - name: Push Firefox latest to DockerHub
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      with:
-        args: push "${DOCKER_USERNAME}/firefox:latest"
-  build_beta:
-    name: Build beta
+        registry: 'docker.io'
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        image_name: 'firefox'
+        build_context: 'stable'
+        dockerfile_path: 'stable/Dockerfile'
+        tag_ref: false
+        tag_latest: true
+        tag_version: true
+        tag_sha: false
+        tag_timestamp: false
+  dockerhub_publish_beta:
+    name: DockerHub Build and Publish beta
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Login DockerHub
-      uses: actions/docker/login@master
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    - name: Build Firefox beta
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    - name: Build and Publish beta to DockerHub
+      uses: westonsteimel/action-docker-publish@master
       with:
-        args: build -t "${DOCKER_USERNAME}/firefox:beta" beta
-    - name: Push Firefox beta to DockerHub
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      with:
-        args: push "${DOCKER_USERNAME}/firefox:beta"
-  build_nightly:
-    name: Build nightly
+        registry: 'docker.io'
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        image_name: 'firefox'
+        build_context: 'beta'
+        dockerfile_path: 'beta/Dockerfile'
+        tag_ref: false
+        tag_latest: false
+        tag_version: true
+        tag_sha: false
+        tag_timestamp: false
+  dockerhub_publish_nightly:
+    name: DockerHub Build and Publish nightly
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Login DockerHub
-      uses: actions/docker/login@master
-      env:
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    - name: Build Firefox nightly
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    - name: Build and Publish nightly to DockerHub
+      uses: westonsteimel/action-docker-publish@master
       with:
-        args: build -t "${DOCKER_USERNAME}/firefox:nightly" nightly
-    - name: Push Firefox nightly to DockerHub
-      uses: actions/docker/cli@master
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      with:
-        args: push "${DOCKER_USERNAME}/firefox:nightly"
+        registry: 'docker.io'
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        image_name: 'firefox'
+        build_context: 'nightly'
+        dockerfile_path: 'nightly/Dockerfile'
+        tag_ref: false
+        tag_latest: false
+        tag_version: true
+        tag_sha: false
+        tag_timestamp: true
 

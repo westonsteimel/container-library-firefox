@@ -69,5 +69,5 @@ LABEL org.opencontainers.image.title="Firefox Beta" \
     org.opencontainers.image.description="Firefox Beta in Docker" \
     org.opencontainers.image.url="https://github.com/westonsteimel/docker-httpie" \
     org.opencontainers.image.source="https://github.com/westonsteimel/docker-httpie" \
-    org.opencontainers.image.version="beta"
-
+    org.opencontainers.image.version="beta" \
+    version="beta"

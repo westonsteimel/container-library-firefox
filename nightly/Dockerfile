@@ -69,5 +69,6 @@ LABEL org.opencontainers.image.title="Firefox Nightly" \
     org.opencontainers.image.description="Firefox Nightly in Docker" \
     org.opencontainers.image.url="https://github.com/westonsteimel/docker-firefox" \
     org.opencontainers.image.source="https://github.com/westonsteimel/docker-firefox" \
-    org.opencontainers.image.version="nightly"
+    org.opencontainers.image.version="nightly" \
+    version="nightly"
 

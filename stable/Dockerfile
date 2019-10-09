@@ -69,5 +69,6 @@ LABEL org.opencontainers.image.title="Firefox" \
     org.opencontainers.image.description="Firefox in Docker" \
     org.opencontainers.image.url="https://github.com/westonsteimel/docker-httpie" \
     org.opencontainers.image.source="https://github.com/westonsteimel/docker-httpie" \
-    org.opencontainers.image.version="stable"
+    org.opencontainers.image.version="stable" \
+    version="stable"
 
