@@ -1,3 +1,7 @@
+ARG SOURCE
+ARG REVISION
+ARG CREATED
+ARG VERSION
 ARG FIREFOX_LANGUAGE="en-US"
 ARG FIREFOX_PRODUCT="firefox-nightly-latest-ssl"
 
@@ -22,6 +26,10 @@ RUN apt-get update \
 
 FROM debian:sid-slim
 
+ARG SOURCE
+ARG REVISION
+ARG CREATED
+ARG VERSION
 ARG FIREFOX_LANGUAGE
 
 COPY --from=downloader /opt/firefox/ /opt/firefox/
@@ -67,8 +75,8 @@ ENTRYPOINT [ "startfirefox" ]
 
 LABEL org.opencontainers.image.title="Firefox Nightly" \
     org.opencontainers.image.description="Firefox Nightly in Docker" \
-    org.opencontainers.image.url="https://github.com/westonsteimel/docker-firefox" \
-    org.opencontainers.image.source="https://github.com/westonsteimel/docker-firefox" \
-    org.opencontainers.image.version="nightly" \
-    version="nightly"
+    org.opencontainers.image.source="${SOURCE}" \
+    org.opencontainers.image.revision="${REVISION}" \
+    org.opencontainers.image.created="${CREATED}" \
+    org.opencontainers.image.version="${VERSION}"
 

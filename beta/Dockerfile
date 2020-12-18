@@ -1,3 +1,7 @@
+ARG VERSION
+ARG SOURCE
+ARG REVISION
+ARG CREATED
 ARG FIREFOX_LANGUAGE="en-US"
 ARG FIREFOX_PRODUCT="firefox-beta-latest-ssl"
 
@@ -22,6 +26,10 @@ RUN apt-get update \
 
 FROM debian:sid-slim
 
+ARG VERSION
+ARG SOURCE
+ARG REVISION
+ARG CREATED
 ARG FIREFOX_LANGUAGE
 
 COPY --from=downloader /opt/firefox/ /opt/firefox/
@@ -67,7 +75,8 @@ ENTRYPOINT [ "startfirefox" ]
 
 LABEL org.opencontainers.image.title="Firefox Beta" \
     org.opencontainers.image.description="Firefox Beta in Docker" \
-    org.opencontainers.image.url="https://github.com/westonsteimel/docker-httpie" \
-    org.opencontainers.image.source="https://github.com/westonsteimel/docker-httpie" \
-    org.opencontainers.image.version="beta" \
-    version="beta"
+    org.opencontainers.image.source="${SOURCE}" \
+    org.opencontainers.image.revision="${REVISION}" \
+    org.opencontainers.image.created="${CREATED}" \
+    org.opencontainers.image.version="${VERSION}"
+

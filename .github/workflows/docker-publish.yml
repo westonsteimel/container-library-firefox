@@ -1,0 +1,76 @@
+on: 
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 1 * * *'
+name: Build and publish to DockerHub
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_REGISTRY: 'docker.io'
+  DOCKER_REPOSITORY: 'firefox'
+jobs:
+  stable:
+    name: stable
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - 
+        name: Build and Publish stable to DockerHub
+        run: |
+          export DOCKER_BUILD_CONTEXT="stable" 
+          export DOCKER_IMAGE_VERSION="stable"
+          export DOCKER_TAGS="stable,latest"
+          ./scripts/publish.sh
+
+  beta:
+    name: beta
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build and Publish stable to DockerHub
+        run: |
+          export DOCKER_BUILD_CONTEXT="beta"
+          export DOCKER_IMAGE_VERSION="beta"
+          export DOCKER_TAGS="beta"
+          ./scripts/publish.sh
+
+  nightly:
+    name: nightly
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1 
+      -
+        name: Build and Publish edge to DockerHub
+        run: |
+          export DOCKER_BUILD_CONTEXT="nightly"
+          export DOCKER_IMAGE_VERSION="nightly"
+          export DOCKER_TAGS="nightly"
+          ./scripts/publish.sh
+
