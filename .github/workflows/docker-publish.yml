@@ -1,4 +1,5 @@
 on: 
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,8 +9,9 @@ name: Build and publish to DockerHub
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DOCKER_REGISTRY: 'docker.io'
-  DOCKER_REPOSITORY: 'firefox'
+  GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+  QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+  QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
 jobs:
   stable:
     name: stable
@@ -25,12 +27,16 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - 
-        name: Build and Publish stable to DockerHub
+        name: Build and Publish stable docker images
         run: |
-          export DOCKER_BUILD_CONTEXT="stable" 
-          export DOCKER_IMAGE_VERSION="stable"
-          export DOCKER_TAGS="stable,latest"
-          ./scripts/publish.sh
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            ./scripts/update-stable.sh
+            export DOCKER_BUILD_CONTEXT="stable"
+            export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" stable/Dockerfile`
+            export DOCKER_TAGS="stable,latest,${DOCKER_IMAGE_VERSION}"
+            ./scripts/publish.sh
+            git push
 
   beta:
     name: beta
@@ -46,12 +52,16 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Build and Publish stable to DockerHub
+        name: Build and Publish beta docker images
         run: |
-          export DOCKER_BUILD_CONTEXT="beta"
-          export DOCKER_IMAGE_VERSION="beta"
-          export DOCKER_TAGS="beta"
-          ./scripts/publish.sh
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            ./scripts/update-beta.sh
+            export DOCKER_BUILD_CONTEXT="beta"
+            export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" beta/Dockerfile`
+            export DOCKER_TAGS="beta,${DOCKER_IMAGE_VERSION}"
+            ./scripts/publish.sh
+            git push
 
   nightly:
     name: nightly
@@ -67,10 +77,14 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1 
       -
-        name: Build and Publish edge to DockerHub
+        name: Build and Publish nightly docker images
         run: |
-          export DOCKER_BUILD_CONTEXT="nightly"
-          export DOCKER_IMAGE_VERSION="nightly"
-          export DOCKER_TAGS="nightly"
-          ./scripts/publish.sh
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            ./scripts/update-nightly.sh
+            export DOCKER_BUILD_CONTEXT="nightly"
+            export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" nightly/Dockerfile`
+            export DOCKER_TAGS="edge,nightly,${DOCKER_IMAGE_VERSION}"
+            ./scripts/publish.sh
+            git push
 

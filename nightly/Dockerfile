@@ -1,15 +1,10 @@
-ARG SOURCE
-ARG REVISION
-ARG CREATED
-ARG VERSION
+ARG VERSION="92.0a1"
 ARG FIREFOX_LANGUAGE="en-US"
-ARG FIREFOX_PRODUCT="firefox-nightly-latest-ssl"
 
 FROM debian:sid-slim as downloader
 
+ARG VERSION
 ARG FIREFOX_LANGUAGE
-ARG FIREFOX_PRODUCT
-ARG FIREFOX_DOWNLOAD_URL="https://download.mozilla.org/?product=${FIREFOX_PRODUCT}&os=linux64&lang=${FIREFOX_LANGUAGE}"
 
 RUN apt-get update \
     && apt-get install -y \
@@ -19,18 +14,17 @@ RUN apt-get update \
     xz-utils \
     --no-install-recommends \
     && cd /opt/ \
-    && echo "Downloading from ${FIREFOX_DOWNLOAD_URL}..." \
-    && curl -fSL -o firefox.tar.bz2 "${FIREFOX_DOWNLOAD_URL}" \
+    && echo "Downloading from https://download-installer.cdn.mozilla.net/pub/firefox/nightly/latest-mozilla-central/firefox-${VERSION}.${FIREFOX_LANGUAGE}.linux-x86_64.tar.bz2..." \
+    && curl -fSL -o firefox.tar.bz2 "https://download-installer.cdn.mozilla.net/pub/firefox/nightly/latest-mozilla-central/firefox-${VERSION}.${FIREFOX_LANGUAGE}.linux-x86_64.tar.bz2" \
     && tar xvjf firefox.tar.bz2 \
     && rm firefox.tar.bz2
 
 FROM debian:sid-slim
 
-ARG SOURCE
-ARG REVISION
-ARG CREATED
 ARG VERSION
 ARG FIREFOX_LANGUAGE
+ENV FIREFOX_VERSION="${VERSION}" \
+    LANG="${FIREFOX_LANGUAGE}"
 
 COPY --from=downloader /opt/firefox/ /opt/firefox/
 
@@ -62,8 +56,6 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-ENV LANG "${FIREFOX_LANGUAGE}"
-
 COPY local.conf /etc/fonts/local.conf
 
 RUN mkdir -p /etc/firefox && \  
@@ -75,8 +67,5 @@ ENTRYPOINT [ "startfirefox" ]
 
 LABEL org.opencontainers.image.title="Firefox Nightly" \
     org.opencontainers.image.description="Firefox Nightly in Docker" \
-    org.opencontainers.image.source="${SOURCE}" \
-    org.opencontainers.image.revision="${REVISION}" \
-    org.opencontainers.image.created="${CREATED}" \
     org.opencontainers.image.version="${VERSION}"
 
