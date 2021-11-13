@@ -42,6 +42,7 @@ RUN apt-get update \
     libx11-xcb-dev \
     libx11-xcb1 \
     libxt6 \
+    libxtst6 \
     ffmpeg \
     libpulse0 \
     fonts-noto \
