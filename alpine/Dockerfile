@@ -4,7 +4,8 @@ RUN apk add --no-cache \
 	alsa-lib \
     ca-certificates \
 	firefox \
-    ttf-dejavu
+    ttf-dejavu \
+    ffmpeg
 
 RUN addgroup firefox \
     && adduser -G firefox -s /bin/sh -D firefox \
