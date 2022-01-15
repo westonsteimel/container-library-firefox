@@ -93,3 +93,25 @@ jobs:
             export DOCKER_TAGS="edge,nightly,${DOCKER_IMAGE_VERSION}"
             ./scripts/publish.sh
 
+  alpine:
+    name: alpine
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build and Publish alpine
+        run: |
+            export DOCKER_BUILD_CONTEXT="alpine"
+            export DOCKER_IMAGE_VERSION="alpine"
+            export DOCKER_TAGS="alpine"
+            ./scripts/publish.sh
+
+
