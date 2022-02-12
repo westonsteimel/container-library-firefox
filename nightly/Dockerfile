@@ -1,4 +1,4 @@
-ARG VERSION="98.0a1"
+ARG VERSION="99.0a1"
 ARG FIREFOX_LANGUAGE="en-US"
 
 FROM debian:sid-slim as downloader
