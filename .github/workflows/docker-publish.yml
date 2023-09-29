@@ -4,7 +4,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 1 * * SAT'
+    - cron: '0 1 * * MON-FRI'
 name: Build and publish to DockerHub
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
